@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy ]
+  before_action :set_article, only: %i[show edit update destroy]
 
   # GET /articles or /articles.json
   def index
@@ -18,14 +20,13 @@ class ArticlesController < ApplicationController
   end
 
   # GET /articles/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
-    @article.save
-    render json: @article, status: :ok
+    @article.save!
+    render json: @article, status: :created
 
     # respond_to do |format|
     #   if @article.save
@@ -47,17 +48,18 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1 or /articles/1.json
   def destroy
     @article.destroy
-    head :no_content #status :204
+    head :no_content # status :204
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_article
-      @article = Article.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def article_params
-      params.fetch(:article, {}).permit(:title, :description)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_article
+    @article = Article.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def article_params
+    params.fetch(:article, {}).permit(:title, :description)
+  end
 end
