@@ -11,7 +11,7 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1 or /articles/1.json
   def show
-    render json: @article, status: :ok
+    render json: { article: @article, category: @article.category }, status: :ok
   end
 
   # GET /articles/new
@@ -41,8 +41,8 @@ class ArticlesController < ApplicationController
 
   # PATCH/PUT /articles/1 or /articles/1.json
   def update
-    @article.update(article_params)
-    render json: @article, status: :ok
+    @article.update!(article_params)
+    render json: { article: @article, category: @article.category }, status: :ok
   end
 
   # DELETE /articles/1 or /articles/1.json
@@ -60,6 +60,6 @@ class ArticlesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def article_params
-    params.fetch(:article, {}).permit(:title, :description)
+    params.fetch(:article, {}).permit(:title, :description, :category_id)
   end
 end

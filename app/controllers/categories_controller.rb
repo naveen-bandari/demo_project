@@ -16,7 +16,7 @@ class CategoriesController < ApplicationController
   end
 
   def show
-    render json: { category: @category }, status: :ok
+    render json: { category: @category, articles: @category.articles }, status: :ok
   end
 
   def update
