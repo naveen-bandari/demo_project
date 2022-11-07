@@ -5,6 +5,9 @@ class Article < ApplicationRecord
 
   belongs_to :category
 
+  has_many  :user_articles
+  has_many  :users, through: :user_articles
+
   validate :validate_title
   validate :validate_category
 
@@ -23,13 +26,13 @@ class Article < ApplicationRecord
 
     return if title.to_s.length > 5
 
-    errors.add(:title, 'should be minimum of 5 characters')    
+    errors.add(:title, 'should be minimum of 5 characters')
   end
 
   def validate_category
     # puts "=============validate_category=========="
 
-    return if category.present? && category.articles.count > 0
+    return if category.present? && category.articles.count.positive?
 
     errors.add(:category, 'should have atleast one article')
   end
@@ -54,16 +57,12 @@ class Article < ApplicationRecord
   end
 
   def perfrom_after_create
-    # puts '==============perfroming_after_create========='
     previous_count = category.articles_count
     category.update(articles_count: previous_count + 1)
-    # puts '========after incrementing count======='
   end
 
   def inform_category_changes
-    puts "====================inform_category_changes============"
-    #TODO:
-    # self.user.send_category_info_email
+    puts '====================inform_category_changes============'
   end
 
   def send_an_alert
@@ -75,9 +74,7 @@ class Article < ApplicationRecord
   end
 
   def perfrom_after_destroy
-    # puts '===========performing perfrom_after_destroy==========='
     previous_count = category.articles_count
     category.update(articles_count: previous_count - 1)
-    # puts '========after decrementing count======='
   end
 end

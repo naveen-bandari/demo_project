@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[show edit update destroy mark_as_approved inactivate]
+  before_action :set_article, only: %i[show edit update destroy mark_as_approved inactivate mark_as_liked mark_as_disliked]
 
   # GET /articles or /articles.json
   def index
@@ -56,6 +56,16 @@ class ArticlesController < ApplicationController
   def inactivate
     @article.update!(active: false)
     render json: { article: @article, category: @article.category }, status: :ok
+  end
+
+  def mark_as_liked
+    @article.user_articles.create(user_id: params[:user_id])
+    render json: { message: 'Article added to favourites' }, status: :ok
+  end
+
+  def mark_as_disliked
+    @article.user_articles.find_by(user_id: params[:user_id]).destroy
+    render json: { message: 'Article removed from favourites' }, status: :ok
   end
 
   private
