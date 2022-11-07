@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   resources :articles do
     post :mark_as_approved, on: :member
+    post :mark_as_liked, on: :member
+    post :mark_as_disliked, on: :member
     post :inactivate, on: :member
     get :published, on: :collection
   end
