@@ -1,26 +1,23 @@
 # frozen_string_literal: true
 
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[show edit update destroy]
+  before_action :set_article, only: %i[show edit update destroy mark_as_approved inactivate mark_as_liked mark_as_disliked]
 
   # GET /articles or /articles.json
   def index
     @articles = Article.all
-    render json: { articles: @articles }, status: :ok
+    render json: { articles: @articles, meta: { total: @articles.count } }, status: :ok
+  end
+
+  def published
+    @articles = Article.where(approved: true, active: true)
+    render json: { articles: @articles, meta: { total: @articles.count } }, status: :ok
   end
 
   # GET /articles/1 or /articles/1.json
   def show
     render json: { article: @article, category: @article.category }, status: :ok
   end
-
-  # GET /articles/new
-  def new
-    @article = Article.new
-  end
-
-  # GET /articles/1/edit
-  def edit; end
 
   # POST /articles or /articles.json
   def create
@@ -49,6 +46,26 @@ class ArticlesController < ApplicationController
   def destroy
     @article.destroy
     head :no_content # status :204
+  end
+
+  def mark_as_approved
+    @article.update!(approved: true, active: true)
+    render json: { article: @article, category: @article.category }, status: :ok
+  end
+
+  def inactivate
+    @article.update!(active: false)
+    render json: { article: @article, category: @article.category }, status: :ok
+  end
+
+  def mark_as_liked
+    @article.user_articles.create(user_id: params[:user_id])
+    render json: { message: 'Article added to favourites' }, status: :ok
+  end
+
+  def mark_as_disliked
+    @article.user_articles.find_by(user_id: params[:user_id]).destroy
+    render json: { message: 'Article removed from favourites' }, status: :ok
   end
 
   private

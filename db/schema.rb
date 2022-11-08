@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_221_021_004_922) do
+ActiveRecord::Schema.define(version: 20_221_107_014_755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -21,8 +21,9 @@ ActiveRecord::Schema.define(version: 20_221_021_004_922) do
     t.string 'description'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
-    t.boolean 'active', default: true
     t.bigint 'category_id'
+    t.boolean 'approved', default: false
+    t.boolean 'active', default: false
     t.index ['category_id'], name: 'index_articles_on_category_id'
   end
 
@@ -30,6 +31,23 @@ ActiveRecord::Schema.define(version: 20_221_021_004_922) do
     t.string 'name'
     t.datetime 'created_at', precision: 6, null: false
     t.datetime 'updated_at', precision: 6, null: false
+    t.integer 'articles_count', default: 0
+  end
+
+  create_table 'user_articles', force: :cascade do |t|
+    t.bigint 'user_id'
+    t.bigint 'article_id'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+  end
+
+  create_table 'users', force: :cascade do |t|
+    t.string 'name'
+    t.string 'mobile'
+    t.string 'email'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.string 'uid'
   end
 
   add_foreign_key 'articles', 'categories'

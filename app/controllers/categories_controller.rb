@@ -1,12 +1,22 @@
 # frozen_string_literal: true
 
 class CategoriesController < ApplicationController
-  before_action :set_category, only: %i[show update destroy]
+  before_action :set_category, only: %i[show update destroy articles]
+
+  def articles_list
+    @articles = Category.all.collect(&:articles).flatten
+    render json: { articles: @articles, meta: { total: @articles.count } }, status: :ok
+  end
 
   # GET /articles or /articles.json
   def index
     @categories = Category.all
     render json: { categories: @categories }, status: :ok
+  end
+
+  # GET /categories/:id/articles
+  def articles
+    render json: { articles: @category.articles }, status: :ok
   end
 
   def create
