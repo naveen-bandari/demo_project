@@ -5,11 +5,11 @@ application up and running.
 
 Things you may want to cover:
 
-* Ruby version
+* MVC
 
-* System dependencies
+* REST API
 
-* Configuration
+* Controllers
 
 * Database creation
 
